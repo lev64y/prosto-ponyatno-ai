@@ -11,7 +11,7 @@ from google.genai.types import Tool, GoogleSearch, GenerateContentConfig, Finish
 from slugify import slugify
 import aiofiles  # Для асинхронного чтения/записи
 
-from core.config import GOOGLE_API_KEY, EXPLANATIONS_DIR
+from app.core.config import GOOGLE_API_KEY, EXPLANATIONS_DIR
 from models import ExplainRequest, StoredExplanation, SearchResultItem
 
 # Настройка логирования

@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+.env
+*.sqlite3
+*.db
+
+# Папка с объяснениями (если не хотите их коммитить)
+# app/explanations/*.json
+
+# IDE-специфичные файлы
+.idea/
+.vscode/

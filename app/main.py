@@ -23,7 +23,7 @@ app = FastAPI(
 )
 
 # Монтируем статические файлы (CSS, JS)
-app.mount("/static", StaticFiles(directory=APP_DIR / "static"), name="static")
+app.mount("static", StaticFiles(directory=APP_DIR / "static"), name="static")
 
 # Настраиваем шаблонизатор Jinja2
 templates = Jinja2Templates(directory=APP_DIR / "templates")

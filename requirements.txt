@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+google-genai
+pydantic
+python-dotenv
+Jinja2
+python-slugify
+aiofiles # Для асинхронной работы с файлами

@@ -40,14 +40,14 @@
 <body>
 <header class="site-header">
     <div class="container header-container">
-        <a href="/" class="logo">ПростоПонятно<span class="ai-suffix">.ai</span></a>
+        <a href="/app/static" class="logo">ПростоПонятно<span class="ai-suffix">.ai</span></a>
         <!-- Можно добавить поиск и сюда, если нужно -->
     </div>
 </header>
 
 <main class="container main-content">
     <nav class="breadcrumbs">
-        <a href="/">Главная</a> > Объяснение
+        <a href="/app/static">Главная</a> > Объяснение
     </nav>
 
     <h1>{{ explanation.topic_raw }}</h1>
@@ -63,7 +63,7 @@
 
     <p class="timestamp"><small>Сгенерировано: {{ explanation.created_at.strftime('%d.%m.%Y %H:%M') }} UTC</small></p>
 
-    <a href="/" class="button-secondary">Задать другой вопрос</a>
+    <a href="/app/static" class="button-secondary">Задать другой вопрос</a>
 
 </main>
 <footer class="site-footer">
