@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПростоПонятно.ai - Объясним Что Угодно!</title>
+    <meta name="description"
+          content="Введите любую сложную тему, термин или мем, и мы объясним это максимально просто, под ваш уровень понимания или с помощью аналогии.">
+
+    <!-- markdown-it -->
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
+    <!-- highlight.js -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💡</text></svg>">
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-container">
+        <a href="/" class="logo">ПростоПонятно<span class="ai-suffix">.ai</span></a>
+        <div class="search-container">
+            <input type="search" id="search-input" placeholder="Поиск по объяснениям..." autocomplete="off">
+            <div id="search-results" class="search-results-dropdown" style="display: none;">
+                <!-- Результаты поиска будут здесь -->
+            </div>
+        </div>
+    </div>
+</header>
+<main class="container main-content">
+    <p class="subtitle">Объясним сложное простыми словами</p>
+
+    <form id="explain-form">
+        <div class="form-group">
+            <label for="topic-input">Что нужно объяснить?</label>
+            <textarea id="topic-input" name="topic" rows="3"
+                      placeholder="Например: Теория относительности, NFT, мем 'Женщина кричит на кота'..."
+                      required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="level-select">Как объяснить?</label>
+            <select id="level-select" name="level">
+                {% for value, text in explanation_levels.items() %}
+                <option value="{{ value }}" {% if value==
+                'simple' %}selected{% endif %}>{{ text }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group" id="analogy-group" style="display: none;">
+            <label for="analogy-input">На примере чего объяснить?</label>
+            <input type="text" id="analogy-input" name="analogy" placeholder="Например: пиццы, компьютера, семьи...">
+        </div>
+
+        <button type="submit" id="submit-button" class="button-primary">Объяснить!</button>
+    </form>
+
+    <div id="loading-indicator" style="display: none;">
+        <div class="spinner"></div>
+        <p>Генерирую объяснение...</p>
+    </div>
+
+    <div id="result-area" style="display: none;">
+        <h2>Результат:</h2>
+        <div id="explanation-output" class="explanation-box">
+            <!-- Сюда будет вставлен HTML из Markdown -->
+        </div>
+        <p id="explanation-link-container" style="display: none; margin-top: 15px;">
+            🔗 <a id="explanation-link" href="#" target="_blank">Постоянная ссылка на это объяснение</a>
+        </p>
+    </div>
+
+    <div id="error-area" style="display: none;" class="error-box">
+        <p id="error-message"></p>
+    </div>
+
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>Работает на <a href="https://ai.google.dev/" target="_blank" rel="noopener noreferrer">Google Gemini</a> | <a
+                href="/sitemap.xml">Карта сайта</a> | © ПростоПонятно.ai 2025</p>
+    </div>
+</footer>
+
+
+<script src="{{ url_for('static', path='/script.js') }}"></script>
+</body>
+</html>

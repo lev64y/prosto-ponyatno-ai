@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO Метаданные -->
+    <title>{{ explanation.meta_title }}</title>
+    <meta name="description" content="{{ explanation.meta_description }}">
+    <link rel="canonical" href="{{ request.url }}"> <!-- Канонический URL -->
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Question",
+            "name": "{{ explanation.topic_raw | escape }}",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "{{ explanation.explanation_text | striptags | replace('\"', '\\\"') | escape }}"
+            },
+            "author": {
+                "@type": "Organization",
+                "name": "ПростоПонятно.ai"
+            },
+            "dateCreated": "{{ explanation.created_at.isoformat() }}"
+        }
+    </script>
+
+    <!-- markdown-it -->
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
+    <!-- highlight.js -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💡</text></svg>">
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-container">
+        <a href="/" class="logo">ПростоПонятно<span class="ai-suffix">.ai</span></a>
+        <!-- Можно добавить поиск и сюда, если нужно -->
+    </div>
+</header>
+
+<main class="container main-content">
+    <nav class="breadcrumbs">
+        <a href="/">Главная</a> > Объяснение
+    </nav>
+
+    <h1>{{ explanation.topic_raw }}</h1>
+    <p class="subtitle">Объяснение в стиле: {{ display_level }}</p>
+
+    <!-- Контейнер для отрендеренного Markdown -->
+    <div id="explanation-content" class="explanation-box">
+        <!-- Сюда будет вставлен HTML -->
+    </div>
+
+    <!-- Скрытый элемент с сырым Markdown текстом -->
+    <div id="raw-markdown" style="display:none;">{{ explanation.explanation_text }}</div>
+
+    <p class="timestamp"><small>Сгенерировано: {{ explanation.created_at.strftime('%d.%m.%Y %H:%M') }} UTC</small></p>
+
+    <a href="/" class="button-secondary">Задать другой вопрос</a>
+
+</main>
+<footer class="site-footer">
+    <div class="container">
+        <p>Работает на <a href="https://ai.google.dev/" target="_blank" rel="noopener noreferrer">Google Gemini</a> | <a
+                href="/sitemap.xml">Карта сайта</a> | © ПростоПонятно.ai {{ now().year if now else '' }}</p>
+    </div>
+</footer>
+
+<!-- Скрипт для рендеринга Markdown на этой странице -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const rawMarkdownEl = document.getElementById('raw-markdown');
+        const explanationContentEl = document.getElementById('explanation-content');
+
+        if (rawMarkdownEl && explanationContentEl) {
+            const markdownText = rawMarkdownEl.textContent; // Получаем сырой текст
+
+            // Инициализация markdown-it (такая же, как в script.js)
+            const md = window.markdownit({
+                html: false,
+                linkify: true,
+                typographer: true,
+                highlight: function (str, lang) {
+                    if (lang && hljs.getLanguage(lang)) {
+                        try {
+                            return '<pre class="hljs"><code>' +
+                                hljs.highlight(str, {language: lang, ignoreIllegals: true}).value +
+                                '</code></pre>';
+                        } catch (__) {
+                        }
+                    }
+                    return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+                }
+            });
+
+            // Рендерим и вставляем HTML
+            explanationContentEl.innerHTML = md.render(markdownText);
+
+            // Добавляем кнопки копирования (используем ту же функцию, что и в script.js)
+            addCopyButtons(explanationContentEl);
+        }
+    });
+
+    // Функция добавления кнопок копирования (дублируется или выносится в общий файл)
+    function addCopyButtons(container) {
+        const codeBlocks = container.querySelectorAll('pre code');
+        codeBlocks.forEach((codeBlock) => {
+            const preElement = codeBlock.parentNode;
+            if (preElement.querySelector('.copy-button')) return;
+
+            const button = document.createElement('button');
+            button.className = 'copy-button';
+            button.textContent = 'Копировать';
+            button.setAttribute('aria-label', 'Копировать код');
+
+            button.addEventListener('click', async () => {
+                try {
+                    await navigator.clipboard.writeText(codeBlock.innerText);
+                    button.textContent = 'Скопировано!';
+                    button.disabled = true;
+                    setTimeout(() => {
+                        button.textContent = 'Копировать';
+                        button.disabled = false;
+                    }, 2000);
+                } catch (err) {
+                    console.error('Ошибка копирования:', err);
+                    button.textContent = 'Ошибка';
+                    setTimeout(() => {
+                        button.textContent = 'Копировать';
+                    }, 2000);
+                }
+            });
+            preElement.style.position = 'relative';
+            preElement.appendChild(button);
+        });
+    }
+</script>
+</body>
+</html>
